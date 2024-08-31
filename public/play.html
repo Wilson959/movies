@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Play Movie</title>
+    <link rel="icon" type="image/x-icon" href="/movie.ico">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="/play.css">
+</head>
+<body>
+    <header>
+        <h1><a href="/" id="landing" onclick="handleMoviesLink(event)">Movies</a></h1>
+        <input type="text" id="searchInput" placeholder="search movies...">
+        <button id="settingsButton" aria-label="Settings">
+            <i class="fa-solid fa-gear"></i>
+        </button>
+            <div id="settingsWindow" class="settings-window hidden">
+                <div class="autoplay-setting">
+                    <span>Autoplay</span>
+                    <label class="switch">
+                        <input type="checkbox" id="autoplayToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+    </header>
+    <main>
+        <h2 id="movie-title-heading"></h2>
+        <video class="movie-player" id="movie" controls playsinline></video>
+
+        <div id="audioTrackControl">
+            <label for="audioTrack">Audio Track:</label>
+            <select id="audioTrack"></select>
+          </div>
+          <div id="subtitleTrackControl">
+            <label for="subtitleTrack">Subtitle Track:</label>
+            <select id="subtitleTrack"></select>
+          </div>
+
+        <div id="movie-popup" class="message-popup hidden"></div>
+        <div id="error-popup" class="message-popup hidden"></div>
+        <p id="error-reload">Movie will not play if you reload the page</p>
+        <p style="margin: 0;">(may vary on device)</p>
+
+        <script>
+document.addEventListener('DOMContentLoaded', function() {
+    const moviePopup = document.getElementById('movie-popup');
+    const movieTitleElement = document.getElementById('movie-title-heading');
+    const videoElement = document.getElementById('movie');
+    const consoleMessage = document.getElementById('error-reload');
+    const moviePath = decodeURIComponent(window.location.pathname.split('/play/')[1].replace(/-/g, ' '));
+    console.log(`Decoded movie path: ${moviePath}`);
+
+    const settingsButton = document.getElementById('settingsButton');
+    const settingsWindow = document.getElementById('settingsWindow');
+    const autoplayToggle = document.getElementById('autoplayToggle');
+
+    // Toggle settings window
+    settingsButton.addEventListener('click', () => {
+        settingsWindow.classList.toggle('hidden');
+    });
+
+    // Close settings window when clicking outside
+    document.addEventListener('click', (event) => {
+        if (!settingsWindow.contains(event.target) && event.target !== settingsButton) {
+            settingsWindow.classList.add('hidden');
+        }
+    });
+
+    // Load autoplay state from localStorage
+    const autoplayState = localStorage.getItem('autoplay') === 'true';
+    autoplayToggle.checked = autoplayState;
+
+    // Update autoplay state in localStorage
+    autoplayToggle.addEventListener('change', () => {
+        localStorage.setItem('autoplay', autoplayToggle.checked);
+    });
+
+    videoElement.addEventListener('error', (e) => {
+        if (e.target.error && e.target.error.code === e.target.error.MEDIA_ERR_ABORTED) {
+            consoleMessage.style.display = 'block';
+        }
+    });
+
+    fetch(`/api/movie/${encodeURIComponent(moviePath)}`)
+    .then(response => response.json())
+    .then(movie => {
+        if (movie.path) {
+            console.log(`Movie path from API: ${movie.path}`);
+            const fileExtension = movie.path.split('.').pop().toLowerCase();
+            const source = document.createElement('source');
+            source.src = `/movies/${encodeURIComponent(movie.path)}`;
+            source.type = fileExtension === 'mkv' ? 'video/x-matroska' : `video/${fileExtension}`;
+            console.log(`Source URL: ${source.src}, Source type: ${source.type}`);
+            videoElement.appendChild(source);
+
+            movieTitleElement.textContent = movie.title;
+            moviePopup.textContent = `${movie.title} now playing...`;
+            moviePopup.classList.remove('hidden');
+            moviePopup.style.opacity = 1;
+
+            setTimeout(() => {
+                moviePopup.style.opacity = 0;
+            }, 1000);
+
+            setTimeout(() => {
+                moviePopup.classList.add('hidden');
+            }, 2500);
+
+            videoElement.load();
+            videoElement.play().catch(e => console.error('Playback failed:', e));
+
+            // Set up event listener for when metadata is loaded
+            videoElement.addEventListener('loadedmetadata', () => {
+                if (fileExtension === 'mkv') {
+                    // Select English audio track for MKV files
+                    for (let i = 0; i < videoElement.audioTracks.length; i++) {
+                        if (videoElement.audioTracks[i].language.toLowerCase().includes('eng')) {
+                            videoElement.audioTracks[i].enabled = true;
+                        } else {
+                            videoElement.audioTracks[i].enabled = false;
+                        }
+                    }
+
+                    // Select English subtitle track for MKV files
+                    for (let i = 0; i < videoElement.textTracks.length; i++) {
+                        if (videoElement.textTracks[i].language.toLowerCase().includes('eng')) {
+                            videoElement.textTracks[i].mode = 'showing';
+                        } else {
+                            videoElement.textTracks[i].mode = 'hidden';
+                        }
+                    }
+                }
+            });
+        } else {
+            throw new Error("No video path provided.");
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching movie info:', error);
+        const errorDiv = document.getElementById('error-popup');
+        errorDiv.textContent = error.message;
+        errorDiv.classList.remove('hidden');
+    });
+
+    document.addEventListener('keydown', (e) => {
+        switch (e.key) {
+            case 'f':
+                toggleFullscreen();
+                break;
+            case 'ArrowLeft':
+                videoElement.currentTime = Math.max(0, videoElement.currentTime - 5);
+                break;
+            case 'ArrowRight':
+                videoElement.currentTime = Math.min(videoElement.duration, videoElement.currentTime + 5);
+                break;
+            case ' ':
+                e.preventDefault();
+                if (videoElement.paused) {
+                    videoElement.play();
+                } else {
+                    videoElement.pause();
+                }
+                break;
+            case 'm':
+            case 'M':
+                videoElement.muted = !videoElement.muted;
+                break;
+            case 'j':
+                videoElement.currentTime = Math.max(0, videoElement.currentTime - 10);
+                break;
+            case 'l':
+                videoElement.currentTime = Math.min(videoElement.duration, videoElement.currentTime + 10);
+                break;
+            case 'k':
+                if (videoElement.paused) {
+                    videoElement.play();
+                } else {
+                    videoElement.pause();
+                }
+                break;
+            case 'o':
+                window.open(`/play/${encodeURIComponent(moviePath)}`, '_blank');
+                break;
+            case 'p':
+                console.log(`Current time: ${videoElement.currentTime}`);
+                break;
+            default:
+                break;
+        }
+    });
+
+    function toggleFullscreen() {
+        if (document.fullscreenElement) {
+            document.exitFullscreen();
+        } else {
+            videoElement.requestFullscreen();
+        }
+    }
+});
+
+function handleMoviesLink(event) {
+            event.preventDefault();
+            
+            if (window.opener && window.opener.location.pathname === '/') {
+                // If the landing page (index.html) is open in another tab
+                window.close();
+            } else {
+                // If the landing page is not open, redirect to it
+                window.location.href = '/';
+            }
+        }
+
+        </script>
+    </main>
+    <footer>
+        <p>&copy; 2024 Clyd Regalado. All rights reserved.</p>
+        <p style="font-size: 15px;">made with AI's like chatgpt, gemini, claude</p>
+    </footer>
+</body>
+</html>

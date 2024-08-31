@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Movies</title>
+    <link rel="icon" type="image/x-icon" href="/movie.ico">
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;700;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <header>
+        <h1>Movies</h1>
+        <div>
+            <input type="text" id="searchInput" placeholder="search movies...">
+            <button id="settingsButton" aria-label="Settings">
+                <i class="fa-solid fa-gear"></i>
+            </button>
+            <div id="settingsWindow" class="settings-window hidden">
+                <div class="autoplay-setting">
+                    <span>Autoplay</span>
+                    <label class="switch">
+                        <input type="checkbox" id="autoplayToggle">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </div>
+    </header>
+
+    <main role="main">
+        <div id="loading">
+            <span class="spinner"></span> Loading movies...
+        </div>
+
+        <div id="error" class="message-popup hidden"></div>
+
+        <div id="movie-grid"></div>
+
+        <div id="dev-posts">
+            <h2>Posts from the dev</h2>
+            <div class="post">
+                <p>Hey guys!</p>
+            </div>
+            <div class="post">
+                <p>Okay, about to add this update, this is probably good.</p>
+            </div>
+            <div class="post">
+                <p>Now, when playing a movie, if a movie is in the "mkv" format, the player automatically selects the English audio and subtitles track. If you don't speak English, I don't know what to do, lmao.</p>
+            </div>
+            <div class="post">
+                <p>alr guys ima try to implement audio and subtitle tracks differently, wish me luck😭🙏</p>
+            </div>
+        </div>
+
+    </main>
+
+    <div id="cookie-consent" class="hidden">
+        <h2>COOKIESSSSS!!!</h2>
+        <p>The cookies for this site only store if you want to autoplay the movie when you choose a movie to play.</p>
+        <div class="autoplay-setting">
+            <span>Autoplay</span>
+            <label class="switch">
+                <input type="checkbox" id="autoplay-toggle">
+                <span class="slider round"></span>
+            </label>
+        </div>
+        <p>Checking will only apply if you click the Accept button.</p>
+        <button id="accept-cookies">Accept</button>
+    </div>
+
+    <p class="sorry">I'm sorry, I don't know how to remove that thing in the middle but the site works, I swear 😭</p>
+
+    <footer>
+        <p>© 2024 Clyd Regalado. All rights reserved.</p>
+        <p>Made with AI tools like ChatGPT, Gemini, and Claude</p>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
