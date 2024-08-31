@@ -62,4 +62,4 @@ please im begging
 
 ## License
 
-idk yet
+This project is licensed under the MIT License - see the LICENSE file for details.
