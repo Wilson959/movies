@@ -2,8 +2,9 @@
 
 This project is a node.js express website with ability to stream movies in you local machine or server.
 The website itself was made with ChatGPT, Gemini, Claude with me as a human guidance it was MY idea and not from these AI's.
-Made by: salad
+Unsupported video files (eg. hevc) might not play varying on browsers/devices
 
+Made by: salad
 yes im Clyd
 
 ## Features
@@ -25,12 +26,11 @@ root/
 │   │   └── index.html
 │   ├── server.js
 │   └── ... (other files)
-├── movies/
-│   ├── Movie Name 1 (Year) [Quality]/
-│   │   └── movie_file.mp4
-│   ├── Movie Name 2 (Year) [Quality]/
-│   │   └── movie_file.mkv
-│   └── ...
+└── movies/
+    ├── Movie Name 1 (Year) [Quality]/
+    │   └── movie_file.mp4
+    └── Movie Name 2 (Year) [Quality]/
+        └── movie_file.mkv
 ```
 
 ### Important Notes:
