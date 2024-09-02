@@ -3,6 +3,7 @@
 This project is a node.js express website with ability to stream movies in you local machine or server.
 The website itself was made with ChatGPT, Gemini, Claude with me as a human guidance it was MY idea and not from these AI's.
 Unsupported video files (eg. hevc) might not play varying on browsers/devices
+please be nice, im new to coding☹ also i gave up cus i just used jellyfin instead lol
 
 Made by: salad
 yes im Clyd
