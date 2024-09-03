@@ -164,7 +164,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 handleError("Server isn't running");
 
                 const additionalMessage1 = document.createElement('p');
-                additionalMessage1.innerHTML = "Run it Clyd boi <span class=\"spin\">😈</span>";
+                additionalMessage1.innerHTML = "Run it boi <span class=\"spin\">😈</span>";
                 error.appendChild(additionalMessage1);
 
                 const additionalMessage2 = document.createElement('p');
