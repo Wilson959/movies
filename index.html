@@ -89,11 +89,11 @@
     jwplayer.key = 'ypdL3Acgwp4Uh2/LDE9dYh3W/EPwDMuA2yid4ytssfI=';
     jwplayer("myElement").setup({
         file: getUrlParameter('link'),
-        type: 'mp4',
+        type: 'application/vnd.apple.mpegurl',
         autostart: 'true',
         mute: 'false',
         image: "https://envs.sh/QT-.jpg"
-        
+            });
       playerInstance.on("ready", function() {
       const buttonId = "download-video-button";
       const iconPath = "";
