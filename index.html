@@ -1,6 +1,7 @@
 <head>
-<link href='https://cdn.statically.io/gh/Wilson959/playergenerator@refs/heads/main/jwplnetflix-skin.css' rel='stylesheet'/>
-<script type="text/javascript" charset="utf-8" async="" src=""></script>
+<link href='https://cdn.jsdelivr.net/gh/Wilson959/player@refs/heads/master/netflix.css' rel='stylesheet'/>
+<script src="//cdn.jsdelivr.net/npm/cdnbye@latest"></script>  
+<script type="text/javascript" charset="utf-8" async="" src="//cdn.jsdelivr.net/npm/cdnbye@latest/dist/jwplayer.provider.hls.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Video Player</title>
@@ -92,7 +93,7 @@
         type: 'application/vnd.apple.mpegurl',
         autostart: 'true',
         mute: 'false',
-        image: "https://envs.sh/QT-.jpg"
+        image: ""
             });
       playerInstance.on("ready", function() {
       const buttonId = "download-video-button";
